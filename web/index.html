@@ -1,0 +1,117 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+        <style>
+            body {
+                font-family:'Courier New', Courier, monospace;
+                font: 10px;
+                background: rgb(6,84,170);
+                background-image: url('img/new-belgium.jpg');
+                margin: 0;
+                padding: 0;
+            }
+            form, p {
+                padding: 2;
+            }
+            div.wrapper {
+                width: 100%;
+                color:white;
+                background: rgb(6,84,170);
+                background: linear-gradient(90deg, rgba(6,84,170,1) 59%, rgba(0,212,255,1) 100%);
+            }
+            div.header {
+                width: 650px;
+                padding: 5;
+            }
+            div.form {
+                width: 100%;
+                padding-left: 5;
+            }
+            div.gallery {
+              margin: 5px;
+              border: 1px solid #ccc;
+              float: left;
+              width: 200px;
+              height: 600px;
+              background-color: black;
+              color: white;
+            }
+            div.gallery img {
+              width: 100%;
+              height: 350;
+            }
+            div.desc {
+              padding: 15px;
+              text-align: center;
+            }
+        </style>
+            
+        <script>
+            $(function() {
+                $.ajax({
+                    dataType: "json",
+                    type: "Get",
+                    url: "./autocomplete"
+                    }).done(function (data) {
+                        $(".autocomplete").autocomplete({
+                            source: data.json_list,
+                            minLength: 2
+                        });
+
+                    });
+                });
+
+            $(document).ready(function() { 
+                $("#search").submit(function(e) {
+                    e.preventDefault();
+                    $("#results").empty();
+                    var inputs = $("#search :input");
+                    inputs[3] = {value: inputs[3].checked ? 1: 0, name: 'mixology'}
+                    $.ajax({
+                        url: "./recommend",
+                        context: document.body,
+                        dataType: "json",
+                        data: inputs
+                    }).done(function(data) {
+                        $("#help").removeAttr("style")
+                        data.json_list.forEach(function(beer){
+                            console.log(beer.href)
+                            $("#results").append(
+                                "<div class=\"gallery\">" +
+                                "<img src=\"" + beer.href + "\">" +
+                                "<div class=\"desc\">" +
+                                    "<h3>" + beer.beer + "</h3>" + "<b>" + beer.abv + " ABV</b><br>"  + beer.brewery + " - " + beer.city + ", " + beer.state +
+                                "</div></div>"
+                            );
+                        })
+                    }).fail(function(){
+                        console.log("Encountered error")
+                    })
+                })
+            });
+            </script>            
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class='header'>
+                <h2>Beer Recommendation System</h2>
+                <p>Input between 1-3 beers and get 5 similar beers from each group.  First three results are strong matches with two wildcards.</p> 
+                <p><b>Alcohol content may vary from the information shown</b>.  Please drink responsibly and always have a designated driver!</p>
+            </div>
+            <div class='form'>
+                <form id="search"> 
+                    <input type="text" class="autocomplete" name="rec1"></input>
+                    <input type="text" class="autocomplete" name="rec2"></input>
+                    <input type="text" class="autocomplete" name="rec3"></input>
+                    <input type="checkbox" class="mixology" name="Mixology">Mixology</input>
+                    <input type="submit"></input>
+                </form>
+                <p>Hint: Try your favorite brewery or just type: "pale ale", "porter", or "lager"</p>
+            </div>
+        </div>
+        <div id="results">
+        </div>
+    </body>
+</html>
