@@ -1,6 +1,6 @@
 # Tap Recommendations
 
-Beer recommendation app built in Python, Flask, Jquery-UI, and MongoDB.  Topic Modeling (NMF, sklearn) is performed on reviews of popular American beer, extracting aroma, flavor, head retention, mouthfeel, and appearance. Can distinguish between dominant flavors and hints of flavors, thanks to Gensim's phrasing.
+Beer recommendation app built in Python, Flask, Jquery-UI, and MongoDB.  Topic Modeling (NMF, sklearn) is performed on reviews of popular American beer, extracting aroma, flavor, head retention, mouthfeel, and appearance. Can distinguish between dominant flavors and hints of flavors, thanks to Gensim's phrase detection.
 
 ## Dependencies
 
